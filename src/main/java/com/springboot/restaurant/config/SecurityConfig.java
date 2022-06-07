@@ -28,13 +28,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .anyRequest().authenticated()
+                .antMatchers("/").hasAnyRole("ADMIN","USER")
+                .antMatchers("/getCart").hasRole("USER")
+                .antMatchers("/manager-items").hasRole("ADMIN")
+                .antMatchers("/showAddForm").hasRole("ADMIN")
                 .and()
                 .formLogin()
                 .loginPage("/showMyLoginPage")
                 .loginProcessingUrl("/authenticateTheUser")
                 .permitAll()
                 .and()
-                .logout().permitAll();
+                .logout()
+                .permitAll().and().exceptionHandling().accessDeniedPage("/access-denied");;
     }
 }
