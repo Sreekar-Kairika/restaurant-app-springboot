@@ -17,8 +17,7 @@ class RestaurantApplicationTests {
 	void contextLoads() {
 	}
 
-	User user = new User("john", "$2a$04$eFytJDGtjbThXa80FyOOBuFdK2IwjyWefYkMpiBEFlpBwDH.5PM0K", 1);
-
+	User user = new User("mary", "$2a$04$eFytJDGtjbThXa80FyOOBuFdK2IwjyWefYkMpiBEFlpBwDH.5PM0K", 1);
 	Item item1 = new Item("Idly", 25);
 	Item item2 = new Item("Dosa", 50);
 
@@ -26,11 +25,10 @@ class RestaurantApplicationTests {
 	Cart cart = new Cart(user, Arrays.asList(cartItem), 75, 2);
 
 
-
+//User Entity
 	@Test
 	void setUserUserNameTest() {
 		user.setUsername("mary");
-
 		Assertions.assertEquals("mary", user.getUsername());
 	}
 
@@ -46,18 +44,44 @@ class RestaurantApplicationTests {
 		Assertions.assertEquals(1, user.getEnabled());
 	}
 
+//	Items
 	@Test
-	void setUserProductsTest() {
+	void setUserItemssTest() {
 		user.setItems(Arrays.asList(item1, item1));
 		Assertions.assertEquals(2, user.getItems().size());
 	}
+	@Test
+	void setItemIdTest() {
+		item1.setPrice(1);
+		Assertions.assertEquals(1, user.getEnabled());
+	}
+
+	void setCartItemCartTest() {
+		cartItem.setCart(cart);
+
+		Assertions.assertEquals(200.00, cartItem.getCart().getTotal());
+	}
+
+
+
 
 	@Test
 	void setUserCartTest() {
 		user.setCart(cart);
 		Assertions.assertEquals(75, user.getCart().getTotal());
 	}
+	@Test
+	void setCartTotalItems() {
+		cart.setTotalItems(2);
 
+		Assertions.assertEquals(2, cart.getTotalItems());
+	}
+	@Test
+	void setCartIdTest() {
+		cart.setId(1);
+
+		Assertions.assertEquals(1, cart.getId());
+	}
 
 
 	@Test
@@ -84,6 +108,7 @@ class RestaurantApplicationTests {
 		Assertions.assertEquals(4, cart.getTotalItems());
 
 	}
+//	
 
 	@Test
 	void setCartItemIdTest() {
