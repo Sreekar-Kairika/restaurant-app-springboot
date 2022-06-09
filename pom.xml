@@ -18,7 +18,7 @@
 		<sonar.organization>sreekar21</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.exclusions> **/com/springboot/restaurant/controller/**, **/com/springboot/restaurant/config/**,
-			**/com/springboot/restaurant/service/**,**/com/springboot/restaurant/dao/**,</sonar.exclusions>
+			,**/com/springboot/restaurant/dao/**,</sonar.exclusions>
 
 	</properties>
 	<dependencies>

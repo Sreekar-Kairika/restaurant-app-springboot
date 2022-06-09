@@ -1,13 +1,28 @@
 package com.springboot.restaurant;
 
+import com.springboot.restaurant.dao.CartRepository;
+import com.springboot.restaurant.dao.ItemRepository;
+import com.springboot.restaurant.dao.UserRepository;
 import com.springboot.restaurant.entity.Cart;
 import com.springboot.restaurant.entity.CartItem;
 import com.springboot.restaurant.entity.Item;
 import com.springboot.restaurant.entity.User;
+import com.springboot.restaurant.service.CartService;
+import com.springboot.restaurant.service.ItemService;
+import com.springboot.restaurant.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.ui.Model;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import static org.mockito.Mockito.*;
+
 
 
 @SpringBootTest
@@ -61,10 +76,7 @@ class RestaurantApplicationTests {
 
 		Assertions.assertEquals(200.00, cartItem.getCart().getTotal());
 	}
-
-
-
-
+	//Cart
 	@Test
 	void setUserCartTest() {
 		user.setCart(cart);
@@ -108,7 +120,7 @@ class RestaurantApplicationTests {
 		Assertions.assertEquals(4, cart.getTotalItems());
 
 	}
-//	
+//
 
 	@Test
 	void setCartItemIdTest() {
@@ -122,4 +134,107 @@ class RestaurantApplicationTests {
 		Assertions.assertEquals(5, cartItem.getQuantity());
 	}
 
+    // SERVICE LAYER
+
+	User user3 = new User("susan", "$2a$04$eFytJDGtjbThXa80FyOOBuFdK2IwjyWefYkMpiBEFlpBwDH.5PM0K", 1);
+
+	@Autowired
+    private UserService userService;
+
+	@MockBean
+	private UserRepository userRepository;
+
+	@Test
+	void findUserByIdTest(){
+		String id="susan";
+
+		when(userRepository.findById(id)).thenReturn(
+				Optional.of(user)
+		);
+		Assertions.assertEquals("$2a$04$eFytJDGtjbThXa80FyOOBuFdK2IwjyWefYkMpiBEFlpBwDH.5PM0K", userService.findById(id).getPassword());
+
+	}
+	@Test
+	void saveUserTest() {
+		userService.save(user3);
+		verify(userRepository, times(1)).save(user3);
+	}
+	@Autowired
+	private ItemService itemService;
+
+	@MockBean
+	private ItemRepository itemRepository;
+
+	@Mock
+	private Model model;
+
+
+	@Test
+	void findAllProductsTest() {
+		when(itemRepository.findAll()).thenReturn(
+				Stream.of(
+						item1,
+						item2
+				).collect(Collectors.toList()));
+
+		Assertions.assertEquals(2, itemRepository.findAll().size());
+
+	}
+
+	@Test
+	void findProductByIdTest() {
+		int id=1;
+
+		when(itemRepository.findById(id)).thenReturn(
+				Optional.of(item1)
+		);
+
+		Assertions.assertEquals("Idly", itemService.findById(id).getItemName());
+	}
+
+	@Test
+	void saveProductTest() {
+		itemService.save(item1);
+		verify(itemRepository, times(1)).save(item1);
+	}
+
+	@Test
+	void deleteProductTest() {
+		int id = 1;
+		itemService.deleteById(id);
+		verify(itemRepository, times(1)).deleteById(id);
+	}
+
+	@Autowired
+	private CartService cartService;
+
+	@MockBean
+	private CartRepository cartRepository;
+
+	@Test
+	void findCartByIdTest() {
+		int id=1;
+
+		when(cartRepository.findById(id)).thenReturn(
+				Optional.of(cart)
+		);
+
+		Assertions.assertEquals(75, cartService.findById(id).getTotal());
+	}
+
+	@Test
+	void saveCartTest() {
+		cartService.save(cart);
+		verify(cartRepository, times(1)).save(cart);
+	}
+
+	@Test
+	void deleteCartTest() {
+		int id = 1;
+		cartService.deleteById(id);
+		verify(cartRepository, times(1)).deleteById(id);
+	}
+
 }
+
+
