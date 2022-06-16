@@ -7,8 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-
-
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,7 +31,7 @@ public class RestaurantController {
     public RestaurantController() {}
 
     @GetMapping("/")
-    public String getAllBooks(Model theModel){
+    public String getAllItems(Model theModel){
         List<Item> items = itemService.findAll();
         theModel.addAttribute("items", items);
         return "menu";
@@ -55,7 +53,7 @@ public class RestaurantController {
     }
 
     @PostMapping("/save")
-    public String saveProduct(@ModelAttribute("item") @Valid Item theItem, BindingResult bindingResult) {
+    public String saveItem(@ModelAttribute("item") @Valid Item theItem, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return itemform;
         }
@@ -63,24 +61,13 @@ public class RestaurantController {
         theItem.setUser(user);
         user.getItems().add(theItem);
         itemService.save(theItem);
-        return "redirect:/manager-items";
-    }
-
-    @GetMapping("/manager-items")
-    public String getManagerItems(Model theModel) {
-        User user = userService.getCurrentUser();
-        if(user==null)
-        {
-            return "access-denied";
-        }
-        theModel.addAttribute("managerItems", user.getItems());
-        return "manager-home";
+        return "redirect:/";
     }
 
     @GetMapping("/deleteItem")
-    public String deleteProduct(@RequestParam("itemId") int dId) {
+    public String deleteItem(@RequestParam("itemId") int dId) {
         itemService.deleteById(dId);
-        return "redirect:/manager-items";
+        return "redirect:/";
     }
 
 
@@ -107,21 +94,22 @@ public class RestaurantController {
     public String addToCart(@RequestParam("itemId") int iId) {
         Item item = itemService.findById(iId);
         User user = userService.getCurrentUser();
-        if(item.getUser().equals(user))
-        {
-            return "redirect:/";
-        }
+
+
         Cart cart = user.getCart();
         if (cart == null) {
             cart = new Cart();
             cart.setUser(user);
         }
+
         List<CartItem> cartItems = cart.getCartItems();
         if (cartItems == null) {
             cartItems = new ArrayList<>();
         }
+
         boolean found = false;
         double total = cart.getTotal();
+
         for (CartItem cartItem : cartItems) {
             if (cartItem.getItem().equals(item)) {
                 cartItem.setQuantity(cartItem.getQuantity() + 1);
@@ -130,12 +118,15 @@ public class RestaurantController {
                 break;
             }
         }
+
+        //If item is in Cart & we again add to cart
         if (!found) {
             CartItem newItem = new CartItem(item, 1);
             cart.setTotalItems(cart.getTotalItems()+1);
             newItem.setCart(cart);
             cartItems.add(newItem);
         }
+
         total += item.getPrice();
         cart.setTotal(total);
         cart.setCartItems(cartItems);
@@ -143,39 +134,24 @@ public class RestaurantController {
         cartService.save(cart);
         return "redirect:/";
     }
-    @GetMapping("increaseInCart")
+
+    @GetMapping("/increaseInCart")
     public String increaseInCart(@RequestParam("itemId") int iId) {
         Item item = itemService.findById(iId);
         User user = userService.getCurrentUser();
-        if(item.getUser().equals(user))
-        {
-            return "redirect:/";
-        }
         Cart cart = user.getCart();
-        if (cart == null) {
-            cart = new Cart();
-            cart.setUser(user);
-        }
         List<CartItem> cartItems = cart.getCartItems();
-        if (cartItems == null) {
-            cartItems = new ArrayList<>();
-        }
-        boolean found = false;
+
+
         double total = cart.getTotal();
         for (CartItem cartItem : cartItems) {
             if (cartItem.getItem().equals(item)) {
                 cartItem.setQuantity(cartItem.getQuantity() + 1);
                 cart.setTotalItems(cart.getTotalItems()+1);
-                found = true;
                 break;
             }
         }
-        if (!found) {
-            CartItem newItem = new CartItem(item, 1);
-            cart.setTotalItems(cart.getTotalItems()+1);
-            newItem.setCart(cart);
-            cartItems.add(newItem);
-        }
+
         total += item.getPrice();
         cart.setTotal(total);
         cart.setCartItems(cartItems);
@@ -186,23 +162,24 @@ public class RestaurantController {
 
 
 
-    @GetMapping("decreaseInCart")
+    @GetMapping("/decreaseInCart")
     public String decreaseInCart(@RequestParam("itemId") int iId) {
         Item item = itemService.findById(iId);
         User user = userService.getCurrentUser();
         Cart cart = user.getCart();
         List<CartItem> cartItems = cart.getCartItems();
+
         for (CartItem cartItem : cartItems) {
             if (cartItem.getItem().equals(item)) {
                 cartItem.setQuantity(cartItem.getQuantity() - 1);
                 cart.setTotalItems(cart.getTotalItems()-1);
+
                 if (cartItem.getQuantity() == 0) {
                     cartItems.remove(cartItem);
                     cartItemService.deleteById(cartItem.getId());
                 }
                 break;
             }
-
         }
 
         double total = cart.getTotal();
@@ -217,11 +194,8 @@ public class RestaurantController {
     @GetMapping("/deleteCartItem")
     public String deleteCartItem(@RequestParam("itemId") int iId) {
         Item item = itemService.findById(iId);
-
         User user = userService.getCurrentUser();
-
         Cart cart = user.getCart();
-
         List<CartItem> cartItems = cart.getCartItems();
 
         int qty = 0;
@@ -233,19 +207,15 @@ public class RestaurantController {
                 cartItemService.deleteById(cartItem.getId());
                 break;
             }
-
         }
 
         double total = cart.getTotal();
         total -= item.getPrice() * qty;
-
         cart.setTotal(total);
         cart.setCartItems(cartItems);
         user.setCart(cart);
         userService.save(user);
-
         return "redirect:/getCart";
-
     }
 
     @GetMapping("/checkout")

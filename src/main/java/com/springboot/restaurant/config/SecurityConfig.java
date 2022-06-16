@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // add a reference to our security data source
-
     @Autowired
     private DataSource dataSource;
 
@@ -30,7 +29,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/").hasAnyRole("ADMIN","USER")
                 .antMatchers("/getCart").hasRole("USER")
-                .antMatchers("/manager-items").hasRole("ADMIN")
                 .antMatchers("/showAddForm").hasRole("ADMIN")
                 .and()
                 .formLogin()

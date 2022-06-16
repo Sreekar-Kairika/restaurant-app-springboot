@@ -29,23 +29,26 @@
 
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-<!--  <a class="navbar-brand h2 ">Library</a>-->
+
+<h1 id="titleHead" style="text-align:center;">Welcome to Zemoso Restaurant</h1>
+
+
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse justify-content" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link h4" th:href="@{/}">Menu</a>
-      <a sec:authorize = hasAuthority('ROLE_USER') class="nav-item nav-link h4 active"  th:href="@{/getCart}">Cart</a>
 
-      <a sec:authorize = hasAnyAuthority('ROLE_ADMIN','ROLE_CHEF') class="nav-item nav-link  h4" th:href="@{/manager-items}" >Manager</a>
-      <a sec:authorize = hasAnyAuthority('ROLE_ADMIN','ROLE_CHEF') class="nav-item nav-link h4 active"  th:href="@{/showAddForm}" >Add-Menu-Items</a>
+      <a class="nav-item nav-link h4 "  th:href="@{/}">Menu</a>
+      <a sec:authorize = hasAuthority('ROLE_USER') class="nav-item nav-link h4 active"  th:href="@{/getCart}">Cart</a>
+      <a sec:authorize = hasAnyAuthority('ROLE_ADMIN','ROLE_CHEF') class="nav-item nav-link h4" th:href="@{/showAddForm}" >Add-Menu-Items</a>
+
 
       <form th:action="@{/logout}"
             method="POST" >
-        <input type="submit" value="Logout" class="nav-item nav-link h4" id="logout" />
+        <input type="submit" value="Logout" class="nav-item nav-link h4" style="background-color: #e3f2fd" id="logout" />
       </form>
     </div>
   </div>

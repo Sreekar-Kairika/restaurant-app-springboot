@@ -1,3 +1,35 @@
-*{
+
+#titleHead{
+    background-color:#FF7F50;
+    margin:0px;
+}
+
+
+#logout{
+         border: none;
+         background-color: #F8F9FA;
+         position:fixed;
+         right:10px;
+         top:60px;
+ }
+
+ #card {
+     margin: 2rem;
+     border: 1px solid black;
+     }
+
+#inputType{
+    border:1px solid black;
+}
+
+#inputTypes{
+    border:1px solid black;
+}
+
+.card-link{
+
+}
+
+.btn-color{
 
 }
